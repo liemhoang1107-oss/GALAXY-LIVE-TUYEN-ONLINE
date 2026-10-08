@@ -1,0 +1,6 @@
+{
+  "name": "Galaxy Live Agency - Tuyển Dụng Idol Bigo & TikTok Live",
+  "description": "Cổng tuyển dụng Idol Livestream độc quyền Bigo Live & TikTok Live do CEO Hoàng Liêm điều hành. Đào tạo 1-1, tài trợ thiết bị, thu nhập 20M - 35M+/tháng.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
