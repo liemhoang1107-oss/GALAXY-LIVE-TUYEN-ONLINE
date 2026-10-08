@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import { Sparkles, Send, CheckCircle2, Phone, MessageSquare, AlertCircle, Copy, Check, Clock } from 'lucide-react';
+import { Sparkles, Send, CheckCircle2, Phone, MessageSquare, AlertCircle, Copy, Check, Clock, Mail } from 'lucide-react';
 import { ApplicationFormData } from '../types';
 import { FOUNDER_INFO } from '../data/mockData';
 
@@ -19,6 +19,7 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
     fullName: '',
     phone: '',
     zalo: '',
+    email: '',
     birthYear: '2002',
     gender: 'female' as 'female' | 'male' | 'other',
     city: 'Hà Nội',
@@ -57,6 +58,12 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
 
     if (!formData.zalo.trim()) {
       newErrors.zalo = 'Vui lòng nhập số Zalo để ban tuyển dụng liên hệ';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Vui lòng nhập địa chỉ Gmail / Email của bạn';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      newErrors.email = 'Địa chỉ Gmail / Email chưa đúng định dạng (VD: idol.galaxy@gmail.com)';
     }
 
     setErrors(newErrors);
@@ -190,12 +197,18 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
             </p>
 
             {/* Candidate Code Box */}
-            <div className="inline-block p-4 rounded-2xl bg-slate-900/90 border border-white/10 mb-8">
+            <div className="inline-block p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-white/10 mb-6 text-center">
               <div className="text-xs text-slate-400">Mã Ứng Viên Của Bạn:</div>
-              <div className="text-2xl font-mono font-black text-amber-300 mt-1">
+              <div className="text-2xl sm:text-3xl font-mono font-black text-amber-300 mt-1">
                 {submittedCandidate.id}
               </div>
-              <div className="text-[11px] text-cyan-300/80 mt-1">
+              {submittedCandidate.email && (
+                <div className="text-xs text-slate-300 mt-2 flex items-center justify-center gap-1.5 font-medium">
+                  <Mail className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Gmail liên hệ: <strong>{submittedCandidate.email}</strong></span>
+                </div>
+              )}
+              <div className="text-[11px] text-cyan-300/80 mt-1.5">
                 * Vui lòng lưu mã này để nhận hỗ trợ ưu tiên
               </div>
             </div>
@@ -211,8 +224,14 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
                   <span className="text-cyan-400 font-bold">1.</span>
                   <span>Mở Zalo và kiểm tra tin nhắn/lời mời kết bạn từ Agency trong vòng 2 giờ.</span>
                 </li>
+                {submittedCandidate.email && (
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyan-400 font-bold">2.</span>
+                    <span>Kiểm tra hòm thư Gmail (<strong>{submittedCandidate.email}</strong>) để nhận thư hướng dẫn & hồ sơ ứng tuyển từ Agency.</span>
+                  </li>
+                )}
                 <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">2.</span>
+                  <span className="text-cyan-400 font-bold">{submittedCandidate.email ? '3.' : '2.'}</span>
                   <span>Hoặc chủ động nhắn Zalo cho CEO Hoàng Liêm với nội dung: <em>"Chào anh, em là {submittedCandidate.fullName}, vừa nộp hồ sơ mã {submittedCandidate.id}"</em> để được test cam ngay!</span>
                 </li>
               </ul>
@@ -339,8 +358,33 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
                 </div>
               </div>
 
-              {/* Form Grid 3: Location & Platform Choice */}
+              {/* Form Grid 3: Gmail Collection & City Location */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* Gmail Field */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    Địa Chỉ Gmail / Email <span className="text-red-400">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Mail className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <input
+                      type="email"
+                      required
+                      placeholder="VD: idol.galaxy2026@gmail.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white text-sm focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-colors"
+                    />
+                  </div>
+                  {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Dùng để nhận thư mời casting & hợp đồng bảo trợ độc quyền
+                  </p>
+                </div>
+
+                {/* City */}
                 <div>
                   <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                     Tỉnh / Thành Phố Hiện Tại <span className="text-red-400">*</span>
@@ -353,24 +397,29 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white text-sm focus:border-cyan-400 focus:outline-none"
                   />
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Hỗ trợ setup phòng live hoặc gia nhập studio offline
+                  </p>
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Nền Tảng Bạn Muốn Live <span className="text-red-400">*</span>
-                  </label>
-                  <select
-                    value={formData.platform}
-                    onChange={(e) => setFormData({ ...formData, platform: e.target.value as any })}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white text-sm focus:border-cyan-400 focus:outline-none"
-                  >
-                    <option value="bigo">BIGO LIVE (Lương cứng + Đậu cao)</option>
-                    <option value="tiktok">TIKTOK LIVE (Đẩy traffic xu hướng)</option>
-                    <option value="both">CẢ HAI NỀN TẢNG (Tối ưu thu nhập)</option>
-                    <option value="dance_offline">🔥 NHÓM NHẢY OFFLINE STUDIO (Lương cứng + Doanh thu)</option>
-                    <option value="other">CÁC APP KHÁC (Uplive, Nimo TV...)</option>
-                  </select>
-                  {formData.platform === 'dance_offline' && (
+              {/* Form Grid 4: Platform Choice */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                  Nền Tảng Bạn Muốn Live <span className="text-red-400">*</span>
+                </label>
+                <select
+                  value={formData.platform}
+                  onChange={(e) => setFormData({ ...formData, platform: e.target.value as any })}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white text-sm focus:border-cyan-400 focus:outline-none"
+                >
+                  <option value="bigo">BIGO LIVE (Lương cứng + Đậu cao)</option>
+                  <option value="tiktok">TIKTOK LIVE (Đẩy traffic xu hướng)</option>
+                  <option value="both">CẢ HAI NỀN TẢNG (Tối ưu thu nhập)</option>
+                  <option value="dance_offline">🔥 NHÓM NHẢY OFFLINE STUDIO (Lương cứng + Doanh thu)</option>
+                  <option value="other">CÁC APP KHÁC (Uplive, Nimo TV...)</option>
+                </select>
+                {formData.platform === 'dance_offline' && (
                     <div className="mt-2.5 p-3 rounded-xl bg-pink-950/60 border border-pink-500/40 text-xs text-pink-200 flex items-start gap-2 shadow-lg animate-fadeIn">
                       <Sparkles className="w-4 h-4 text-pink-400 flex-shrink-0 mt-0.5" />
                       <div>
@@ -378,7 +427,6 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
                       </div>
                     </div>
                   )}
-                </div>
               </div>
 
               {/* Time & Shift */}

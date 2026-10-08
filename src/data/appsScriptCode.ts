@@ -68,6 +68,7 @@ function handleSaveCandidate(e) {
       data.fullName || "Chưa nhập",
       "'" + (data.phone || ""),
       "'" + (data.zalo || data.phone || ""),
+      data.email || "",
       data.birthYear || "",
       data.gender === 'female' ? 'Nữ' : (data.gender === 'male' ? 'Nam' : 'Khác'),
       data.city || "",
@@ -87,7 +88,7 @@ function handleSaveCandidate(e) {
     rowRange.setVerticalAlignment("middle");
     rowRange.setFontFamily("Roboto");
     rowRange.setFontSize(10);
-    sheet.getRange(lastRow, 15).setBackground("#FEF3C7").setFontColor("#92400E").setFontWeight("bold");
+    sheet.getRange(lastRow, 16).setBackground("#FEF3C7").setFontColor("#92400E").setFontWeight("bold");
 
     if (SEND_EMAIL_NOTIFICATION && NOTIFICATION_EMAIL) {
       try {
@@ -135,6 +136,7 @@ function initSheetHeader(sheet) {
     "Họ Và Tên",
     "Số Điện Thoại",
     "Số Zalo Liên Hệ",
+    "Gmail / Email",
     "Năm Sinh",
     "Giới Tính",
     "Khu Vực",
@@ -166,16 +168,17 @@ function initSheetHeader(sheet) {
   sheet.setColumnWidth(3, 180);
   sheet.setColumnWidth(4, 130);
   sheet.setColumnWidth(5, 130);
-  sheet.setColumnWidth(6, 90);
+  sheet.setColumnWidth(6, 190);
   sheet.setColumnWidth(7, 90);
-  sheet.setColumnWidth(8, 130);
-  sheet.setColumnWidth(9, 140);
-  sheet.setColumnWidth(10, 130);
-  sheet.setColumnWidth(11, 160);
-  sheet.setColumnWidth(12, 220);
-  sheet.setColumnWidth(13, 200);
+  sheet.setColumnWidth(8, 90);
+  sheet.setColumnWidth(9, 130);
+  sheet.setColumnWidth(10, 140);
+  sheet.setColumnWidth(11, 130);
+  sheet.setColumnWidth(12, 160);
+  sheet.setColumnWidth(13, 220);
   sheet.setColumnWidth(14, 200);
-  sheet.setColumnWidth(15, 140);
+  sheet.setColumnWidth(15, 200);
+  sheet.setColumnWidth(16, 140);
 }
 
 function formatPlatform(platform) {
@@ -195,6 +198,7 @@ function sendNotificationEmail(data, timestamp) {
     "- Họ và tên: " + (data.fullName || "Chưa có") + "\\n" +
     "- Số điện thoại: " + (data.phone || "Chưa có") + "\\n" +
     "- Zalo: " + (data.zalo || data.phone || "Chưa có") + "\\n" +
+    "- Gmail / Email: " + (data.email || "Chưa cung cấp") + "\\n" +
     "- Năm sinh: " + (data.birthYear || "N/A") + " (" + (data.gender === 'female' ? 'Nữ' : 'Nam') + ")\\n" +
     "- Khu vực: " + (data.city || "Chưa rõ") + "\\n" +
     "- Nền tảng đăng ký: " + formatPlatform(data.platform) + "\\n" +

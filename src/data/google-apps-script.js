@@ -63,16 +63,17 @@ function doPost(e) {
       data.fullName || "Chưa nhập",                                  // Cột C: Họ và tên
       "'" + (data.phone || ""),                                       // Cột D: Số điện thoại (dấu ' để giữ số 0 đầu)
       "'" + (data.zalo || data.phone || ""),                          // Cột E: Số Zalo
-      data.birthYear || "",                                           // Cột F: Năm sinh
-      data.gender === 'female' ? 'Nữ' : (data.gender === 'male' ? 'Nam' : 'Khác'), // Cột G: Giới tính
-      data.city || "",                                                // Cột H: Khu vực / Tỉnh thành
-      formatPlatform(data.platform),                                  // Cột I: Nền tảng
-      data.liveHoursPerDay || "",                                     // Cột J: Giờ live/ngày
-      data.shiftPreference || "",                                     // Cột K: Ca live mong muốn
-      Array.isArray(data.talents) ? data.talents.join(", ") : (data.talents || ""), // Cột L: Năng khiếu
-      data.socialLink || "Không có",                                  // Cột M: Link MXH / Video
-      data.note || "",                                                // Cột N: Ghi chú
-      "Mới ứng tuyển"                                                 // Cột O: Trạng thái duyệt
+      data.email || "",                                               // Cột F: Gmail / Email
+      data.birthYear || "",                                           // Cột G: Năm sinh
+      data.gender === 'female' ? 'Nữ' : (data.gender === 'male' ? 'Nam' : 'Khác'), // Cột H: Giới tính
+      data.city || "",                                                // Cột I: Khu vực / Tỉnh thành
+      formatPlatform(data.platform),                                  // Cột J: Nền tảng
+      data.liveHoursPerDay || "",                                     // Cột K: Giờ live/ngày
+      data.shiftPreference || "",                                     // Cột L: Ca live mong muốn
+      Array.isArray(data.talents) ? data.talents.join(", ") : (data.talents || ""), // Cột M: Năng khiếu
+      data.socialLink || "Không có",                                  // Cột N: Link MXH / Video
+      data.note || "",                                                // Cột O: Ghi chú
+      "Mới ứng tuyển"                                                 // Cột P: Trạng thái duyệt
     ];
 
     // Chèn dòng mới vào trang tính
@@ -86,7 +87,7 @@ function doPost(e) {
     rowRange.setFontSize(10);
     
     // Đổi màu cột trạng thái
-    sheet.getRange(lastRow, 15).setBackground("#FEF3C7").setFontColor("#92400E").setFontWeight("bold");
+    sheet.getRange(lastRow, 16).setBackground("#FEF3C7").setFontColor("#92400E").setFontWeight("bold");
 
     // Gửi email thông báo tức thì cho CEO Hoàng Liêm nếu bật
     if (SEND_EMAIL_NOTIFICATION && NOTIFICATION_EMAIL) {
@@ -134,6 +135,7 @@ function initSheetHeader(sheet) {
     "Họ Và Tên",
     "Số Điện Thoại",
     "Số Zalo Liên Hệ",
+    "Gmail / Email",
     "Năm Sinh",
     "Giới Tính",
     "Khu Vực",
@@ -170,16 +172,17 @@ function initSheetHeader(sheet) {
   sheet.setColumnWidth(3, 180); // Họ tên
   sheet.setColumnWidth(4, 130); // SĐT
   sheet.setColumnWidth(5, 130); // Zalo
-  sheet.setColumnWidth(6, 90);  // Năm sinh
-  sheet.setColumnWidth(7, 90);  // Giới tính
-  sheet.setColumnWidth(8, 130); // Khu vực
-  sheet.setColumnWidth(9, 140); // Nền tảng
-  sheet.setColumnWidth(10, 130);// Giờ live
-  sheet.setColumnWidth(11, 160);// Ca live
-  sheet.setColumnWidth(12, 220);// Năng khiếu
-  sheet.setColumnWidth(13, 200);// Link
-  sheet.setColumnWidth(14, 200);// Ghi chú
-  sheet.setColumnWidth(15, 140);// Trạng thái
+  sheet.setColumnWidth(6, 190); // Gmail / Email
+  sheet.setColumnWidth(7, 90);  // Năm sinh
+  sheet.setColumnWidth(8, 90);  // Giới tính
+  sheet.setColumnWidth(9, 130); // Khu vực
+  sheet.setColumnWidth(10, 140); // Nền tảng
+  sheet.setColumnWidth(11, 130);// Giờ live
+  sheet.setColumnWidth(12, 160);// Ca live
+  sheet.setColumnWidth(13, 220);// Năng khiếu
+  sheet.setColumnWidth(14, 200);// Link
+  sheet.setColumnWidth(15, 200);// Ghi chú
+  sheet.setColumnWidth(16, 140);// Trạng thái
 }
 
 /**
@@ -207,6 +210,7 @@ Hệ thống Galaxy Live Agency vừa ghi nhận 1 đơn ứng tuyển mới:
 - Họ và tên: ${data.fullName || "Chưa có"}
 - Số điện thoại: ${data.phone || "Chưa có"}
 - Zalo: ${data.zalo || data.phone || "Chưa có"}
+- Gmail / Email: ${data.email || "Chưa cung cấp"}
 - Năm sinh: ${data.birthYear || "N/A"} (${data.gender === 'female' ? 'Nữ' : 'Nam'})
 - Khu vực: ${data.city || "Chưa rõ"}
 - Nền tảng đăng ký: ${formatPlatform(data.platform)}
@@ -219,8 +223,7 @@ Hệ thống Galaxy Live Agency vừa ghi nhận 1 đơn ứng tuyển mới:
 
 👉 Vui lòng mở Google Sheets để xem và liên hệ Zalo phỏng vấn ứng viên ngay!
 Trân trọng,
-Galaxy Live Agency Auto-Notification System
-  `;
+Galaxy Live Agency Auto-Notification System`;
 
   MailApp.sendEmail(NOTIFICATION_EMAIL, subject, body);
 }

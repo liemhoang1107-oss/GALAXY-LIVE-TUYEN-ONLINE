@@ -3,7 +3,7 @@ import {
   X, Search, Phone, MessageSquare, Download, Trash2, CheckCircle2, 
   Clock, Calendar, User, ExternalLink, Link, Copy, Check, Send, 
   FileCode, Sparkles, AlertCircle, Database, Lock, Unlock, KeyRound, 
-  Eye, EyeOff, LogOut, ShieldCheck
+  Eye, EyeOff, LogOut, ShieldCheck, Mail
 } from 'lucide-react';
 import { ApplicationFormData } from '../types';
 import { GOOGLE_APPS_SCRIPT_CODE } from '../data/appsScriptCode';
@@ -150,6 +150,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       fullName: 'Nguyễn Thị Thùy Trang (Đơn Thử Nghiệm)',
       phone: '0382355777',
       zalo: '0382355777',
+      email: 'thuytrang.test@gmail.com',
       birthYear: '2003',
       gender: 'female',
       city: 'Hà Nội',
@@ -223,12 +224,13 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   };
 
   const exportCSV = () => {
-    const headers = ['Mã Đơn', 'Họ Tên', 'SĐT', 'Zalo', 'Năm Sinh', 'Giới Tính', 'Tỉnh Thành', 'App', 'Giờ Live', 'Ca Live', 'Thế Mạnh', 'Link MXH', 'Trạng Thái', 'Ngày Nộp'];
+    const headers = ['Mã Đơn', 'Họ Tên', 'SĐT', 'Zalo', 'Gmail/Email', 'Năm Sinh', 'Giới Tính', 'Tỉnh Thành', 'App', 'Giờ Live', 'Ca Live', 'Thế Mạnh', 'Link MXH', 'Trạng Thái', 'Ngày Nộp'];
     const rows = applications.map(a => [
       a.id,
       `"${a.fullName}"`,
       `"${a.phone}"`,
       `"${a.zalo}"`,
+      `"${a.email || ''}"`,
       a.birthYear,
       a.gender,
       `"${a.city}"`,
@@ -566,6 +568,18 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                             {candidate.zalo}
                           </a>
                         </span>
+                        {candidate.email && (
+                          <span className="flex items-center gap-1">
+                            <Mail className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Gmail: </span>
+                            <a 
+                              href={`mailto:${candidate.email}`}
+                              className="text-amber-300 hover:underline font-mono"
+                            >
+                              {candidate.email}
+                            </a>
+                          </span>
+                        )}
                         <span className="text-slate-400">
                           Đăng ký: <strong className="text-amber-300 uppercase">{candidate.platform}</strong> ({candidate.liveHoursPerDay} - {candidate.shiftPreference})
                         </span>

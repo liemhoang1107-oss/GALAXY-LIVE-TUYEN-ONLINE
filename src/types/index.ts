@@ -3,6 +3,7 @@ export interface ApplicationFormData {
   fullName: string;
   phone: string;
   zalo: string;
+  email: string;
   birthYear: string;
   gender: 'female' | 'male' | 'other';
   city: string;
