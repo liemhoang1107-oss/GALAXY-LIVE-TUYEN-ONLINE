@@ -147,18 +147,18 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
 
     const sampleCandidate: ApplicationFormData = {
       id: `TEST-${Math.floor(1000 + Math.random() * 9000)}`,
-      fullName: 'Nguyễn Thị Thùy Trang (Đơn Thử Nghiệm)',
+      fullName: 'Hoàng Liêm (Test Hệ Thống)',
       phone: '0382355777',
       zalo: '0382355777',
-      email: 'thuytrang.test@gmail.com',
-      birthYear: '2003',
-      gender: 'female',
+      email: 'hliem247@gmail.com',
+      birthYear: '2000',
+      gender: 'male',
       city: 'Hà Nội',
       platform: 'both',
       liveHoursPerDay: '3.5 giờ/ngày',
       shiftPreference: 'Tối (19h00 - 22h30)',
       talents: ['Tâm sự & Giao lưu', 'Ca hát'],
-      socialLink: 'https://tiktok.com/@thuytrang.live',
+      socialLink: 'https://tiktok.com/@hoangliem.live',
       note: 'Đơn test tự động từ Admin Portal của CEO Hoàng Liêm',
       status: 'pending',
       createdAt: new Date().toISOString()
@@ -172,9 +172,20 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
         body: JSON.stringify(sampleCandidate)
       });
 
-      // Dual trigger via GET beacon
+      // Dual trigger via GET beacon & fetch for 100% receipt
       try {
-        const getUrl = `${webhookUrl.trim()}?data=${encodeURIComponent(JSON.stringify(sampleCandidate))}`;
+        const params = new URLSearchParams({
+          data: JSON.stringify(sampleCandidate),
+          fullName: sampleCandidate.fullName,
+          phone: sampleCandidate.phone,
+          zalo: sampleCandidate.zalo,
+          email: sampleCandidate.email,
+          id: sampleCandidate.id,
+          city: sampleCandidate.city,
+          platform: sampleCandidate.platform
+        });
+        const getUrl = `${webhookUrl.trim()}${webhookUrl.trim().includes('?') ? '&' : '?'}${params.toString()}`;
+        fetch(getUrl, { method: 'GET', mode: 'no-cors' }).catch(() => {});
         const img = new Image();
         img.src = getUrl;
       } catch (beaconErr) {
@@ -183,7 +194,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
 
       setTestResult({
         success: true,
-        message: 'Đã gửi thành công đơn thử nghiệm! Bạn hãy mở Google Sheets để kiểm tra dòng mới vừa xuất hiện.'
+        message: '✓ Đã kích hoạt gửi đơn thử nghiệm! Bạn hãy kiểm tra: 1. Hòm thư Gmail (hliem247@gmail.com & liemhoang1107@gmail.com); 2. Bảng tính Google Sheets có hàng mới và Note tự động màu vàng!'
       });
     } catch (err: any) {
       setTestResult({
@@ -791,6 +802,18 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                     - Ai có quyền truy cập: Chọn <strong>Bất kỳ ai (Anyone)</strong>.<br />
                     - Sao chép <strong>URL ứng dụng web</strong> và dán vào ô bên trên!
                   </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs space-y-2 md:col-span-2">
+                  <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                    <AlertCircle className="w-4 h-4 text-amber-400" />
+                    <span>Lưu Ý Cốt Lõi Để Nhận Được Thông Báo Gmail & Ghi Note Tự Động:</span>
+                  </div>
+                  <ul className="list-disc pl-5 space-y-1.5 text-slate-300">
+                    <li><strong>Quyền truy cập (Who has access):</strong> Bắt buộc chọn <strong>Bất kỳ ai (Anyone)</strong> để website gửi được dữ liệu.</li>
+                    <li><strong>Cấp quyền gửi Gmail:</strong> Khi triển khai hoặc chạy thử, Google sẽ hiện hộp thoại xin quyền gửi thư (MailApp), bạn bấm <em>Nâng cao (Advanced)</em> &rarr; <em>Đi tới... (Go to...)</em> &rarr; <em>Cho phép (Allow)</em>.</li>
+                    <li><strong>Kiểm tra tức thì trong Apps Script:</strong> Bạn có thể chọn hàm <code>testGuiThuVaGhiChu</code> trên thanh công cụ Apps Script rồi bấm nút <strong>Chạy (Run)</strong> để kiểm tra nhận email và ghi Note ngay lập tức!</li>
+                  </ul>
                 </div>
               </div>
             </div>

@@ -105,7 +105,7 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
       try {
         const webhookUrl = localStorage.getItem('galaxy_google_sheets_webhook') || DEFAULT_GOOGLE_SHEETS_WEBHOOK;
         if (webhookUrl && webhookUrl.startsWith('http')) {
-          // Send via POST
+          // 1. Send via POST text/plain
           fetch(webhookUrl, {
             method: 'POST',
             mode: 'no-cors',
@@ -115,11 +115,22 @@ export const ApplicationFormSection: React.FC<ApplicationFormSectionProps> = ({
             console.log('Google Sheets POST sync notice:', err);
           });
 
-          // Dual send via GET beacon for guaranteed receipt
+          // 2. Dual send via GET with encoded payload & direct parameters for 100% receipt
           try {
-            const getUrl = `${webhookUrl}?data=${encodeURIComponent(JSON.stringify(newCandidate))}`;
-            const img = new Image();
-            img.src = getUrl;
+            const params = new URLSearchParams({
+              data: JSON.stringify(newCandidate),
+              fullName: newCandidate.fullName,
+              phone: newCandidate.phone,
+              zalo: newCandidate.zalo,
+              email: newCandidate.email,
+              id: newCandidate.id,
+              city: newCandidate.city,
+              platform: newCandidate.platform
+            });
+            const getUrl = `${webhookUrl}${webhookUrl.includes('?') ? '&' : '?'}${params.toString()}`;
+            fetch(getUrl, { method: 'GET', mode: 'no-cors' }).catch(() => {});
+            const beaconImg = new Image();
+            beaconImg.src = getUrl;
           } catch (e) {
             // ignore
           }
